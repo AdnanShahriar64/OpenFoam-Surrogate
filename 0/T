@@ -1,0 +1,42 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  13
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   uniform 293.15;
+
+boundaryField
+{
+    // Floor = temperature reference and heat sink (e.g. regolith below the floor).
+    // A closed room with flux BCs only has no steady state unless the net
+    // wall flux is exactly zero, and even then the temperature level floats.
+    base
+    {
+        type            fixedValue;
+        value           uniform 293.15;
+    }
+
+    // Default: uniform 20 W/m2 into the air.
+    // set_wall_flux.py replaces this with a spatially varying fixedGradient.
+    wall
+    {
+        type            externalTemperature;
+        q               constant 20;
+        value           uniform 293.15;
+    }
+}
+
+// ************************************************************************* //

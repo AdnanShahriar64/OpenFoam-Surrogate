@@ -1,0 +1,47 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  13
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solver          fluid;
+
+// Stage 2 (steady). Continues from the start-up result, iteration counter
+// starts where stage 1 stopped (e.g. 200 -> runs to 3000).
+startFrom       latestTime;
+startTime       0;
+stopAt          endTime;
+endTime         3000;
+deltaT          1;
+
+writeControl    timeStep;
+writeInterval   250;
+purgeWrite      2;
+
+writeFormat     ascii;
+writePrecision  8;
+writeCompression off;
+timeFormat      general;
+timePrecision   6;
+runTimeModifiable true;
+
+functions
+{
+    #includeFunc residuals(p_rgh, U, e)
+    #includeFunc wallHeatFlux
+    #includeFunc patchAverage(patch=wall, fields=(T))
+    #includeFunc patchAverage(patch=base, fields=(T))
+    #includeFunc volAverage(T)
+}
+
+// ************************************************************************* //

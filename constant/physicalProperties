@@ -1,0 +1,55 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  13
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      physicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+thermoType
+{
+    type            heRhoThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          eConst;
+    equationOfState Boussinesq;
+    specie          specie;
+    energy          sensibleInternalEnergy;
+}
+
+mixture
+{
+    specie
+    {
+        molWeight       28.9;
+    }
+    equationOfState
+    {
+        rho0            1.204;
+        T0              293.15;
+        beta            0.00341;
+    }
+    thermodynamics
+    {
+        // Boussinesq sets Cp - Cv = 0, so Cv here is also Cp.
+        // Use air's Cp (not its Cv = 718), otherwise heat capacity and
+        // kappa = mu*Cp/Pr are both ~29% too low.
+        Cv              1005;
+        hf              0;
+    }
+    transport
+    {
+        mu              1.81e-05;
+        Pr              0.71;       // kappa = 1.81e-5*1005/0.71 = 0.02562 W/m/K
+    }
+}
+
+// ************************************************************************* //
